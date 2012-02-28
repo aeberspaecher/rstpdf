@@ -16,12 +16,16 @@ import tempfile
 
 if(__name__ == '__main__'):
 
-    progUsage = "usage: %prog file"
+    progUsage = "usage: %prog file1 (file2) (file3)"
     parser = OptionParser(usage=progUsage)
     parser.add_option("-s", "--size", action="store", default=12,
                       dest="fontsize", help="Fontsize in points. Defaults to 12.")
 
     (options, args) = parser.parse_args()
+
+    if(len(args) == 0):
+        parser.error("Specify at least one file to convert!")
+        sys.exit(1)
 
     rst2latexOptions = """--latex-preamble="\setcounter{secnumdepth}{3}" --table-style=booktabs --no-section-numbering --documentclass=scrartcl --documentoptions a4paper,%spt """%(options.fontsize)
 
@@ -69,7 +73,7 @@ if(__name__ == '__main__'):
                                     %(path+texFileName, path+texFileName),
                                     cwd=path, shell=True)
         # output not supressed, may be helpful in error search
-        
+
         errorCode = subprocess.call(["cp", path+pdfFileName, os.environ["PWD"]])
         if(errorCode != 0):
             print("Copying PDF file back failed!")
