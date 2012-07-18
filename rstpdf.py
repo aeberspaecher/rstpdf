@@ -5,9 +5,12 @@
 
 Basically, this script only calls rst2latex and pdflatex (which need to be
 installed). KOMA-Script document classes are being used.
+
+(c) 2012 Alexander Eberspächer
 """
 
 # TODO: implement "check" option
+# TODO: make math more convenient
 
 import os, sys
 import subprocess
@@ -32,18 +35,34 @@ if(__name__ == '__main__'):
     devnull = open(os.devnull)
 
     # - copy source file(s) to temporary directory
+    # - parse for figure file and copy them as well
     # - call rst2latex
     # - adjust spacing a little
     # - run pdflatex twice
     # - copy result back
+
     path = tempfile.mkdtemp() + "/"
-    #print "Using temp path", path
     for fileName in args:
+        # copy source:
         errorCode = subprocess.call("cp %s %s"%(fileName, path),
                                     cwd=os.environ["PWD"], shell=True)
         if(errorCode != 0):
             print("Copying rst file to temporary path failed!")
             sys.exit(1)
+
+        # parse for figures:
+        fileObj = open(fileName, mode="r")
+        fileText = fileObj.readlines()
+        for line in fileText:
+            if(".. figure" in line):
+                figName = line[line.find(":: ")+len(":: "):].strip()
+                # copy figure:
+                errorCode = subprocess.call("cp %s %s"%(figName, path),
+                                    cwd=os.environ["PWD"], shell=True)
+                if(errorCode != 0):
+                    print("Copying figure file to temporary path failed!")
+                    sys.exit(1)
+
         texFileName = fileName[:fileName.rfind(".")] + ".tex"
         pdfFileName = fileName[:fileName.rfind(".")] + ".pdf"
         #print "Name of tex file", texFileName, path+texFileName
