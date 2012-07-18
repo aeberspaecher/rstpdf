@@ -6,9 +6,9 @@ About
 =====
 
 rstpdf is a small wrapper around rst2latex. It copies the rst file to be
-converted as well as the included figures to a temporary directory and calls
-rst2latex and pdflatex there. Also, the script makes a few changes to the
-documents layout (KOMA-Script is used).
+converted as well as the included figures and images to a temporary
+directory and calls rst2latex and pdflatex there. Also, the script makes a
+few changes to the documents layout (KOMA-Script is used).
 
 Usage
 =====

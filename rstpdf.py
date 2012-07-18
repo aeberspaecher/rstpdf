@@ -54,13 +54,13 @@ if(__name__ == '__main__'):
         fileObj = open(fileName, mode="r")
         fileText = fileObj.readlines()
         for line in fileText:
-            if(".. figure" in line):
+            if(".. figure" in line or ".. image" in line):
                 figName = line[line.find(":: ")+len(":: "):].strip()
                 # copy figure:
                 errorCode = subprocess.call("cp %s %s"%(figName, path),
                                     cwd=os.environ["PWD"], shell=True)
                 if(errorCode != 0):
-                    print("Copying figure file to temporary path failed!")
+                    print("Copying figure/image file to temporary path failed!")
                     sys.exit(1)
 
         texFileName = fileName[:fileName.rfind(".")] + ".tex"
