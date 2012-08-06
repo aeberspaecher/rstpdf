@@ -23,6 +23,11 @@ if(__name__ == '__main__'):
     parser = OptionParser(usage=progUsage)
     parser.add_option("-s", "--size", action="store", default=12,
                       dest="fontsize", help="Fontsize in points. Defaults to 12.")
+    parser.add_option("-l", "--landscape", action="store_true",
+                      dest="useLandscape", help="Use landscape orientation.")
+    parser.add_option("-t", "--two-column", action="store_true",
+                      dest="useTwoColumns", help="Use two column layout.")
+    
 
     (options, args) = parser.parse_args()
 
@@ -30,7 +35,11 @@ if(__name__ == '__main__'):
         parser.error("Specify at least one file to convert!")
         sys.exit(1)
 
-    rst2latexOptions = """--latex-preamble="\setcounter{secnumdepth}{3}" --table-style=booktabs --no-section-numbering --documentclass=scrartcl --documentoptions a4paper,%spt """%(options.fontsize)
+    # check for special options:
+    orientation = ",landscape" if options.useLandscape else ""
+    twocols = ",twocolumn=true" if options.useTwoColumns else ""
+
+    rst2latexOptions = """--latex-preamble="\setcounter{secnumdepth}{3}" --table-style=booktabs --no-section-numbering --documentclass=scrartcl --documentoptions a4paper,%spt%s%s"""%(options.fontsize, orientation, twocols)
 
     devnull = open(os.devnull)
 
