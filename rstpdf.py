@@ -12,7 +12,8 @@ installed). KOMA-Script document classes are being used.
 # TODO: implement "check" option
 # TODO: make math more convenient
 
-import os, sys
+import os
+import sys
 import subprocess
 from optparse import OptionParser
 import tempfile
@@ -27,7 +28,6 @@ if(__name__ == '__main__'):
                       dest="useLandscape", help="Use landscape orientation.")
     parser.add_option("-t", "--two-column", action="store_true",
                       dest="useTwoColumns", help="Use two column layout.")
-    
 
     (options, args) = parser.parse_args()
 
@@ -67,7 +67,7 @@ if(__name__ == '__main__'):
                 figName = line[line.find(":: ")+len(":: "):].strip()
                 # copy figure:
                 errorCode = subprocess.call("cp %s %s"%(figName, path),
-                                    cwd=os.environ["PWD"], shell=True)
+                                            cwd=os.environ["PWD"], shell=True)
                 if(errorCode != 0):
                     print("Copying figure/image file to temporary path failed!")
                     sys.exit(1)
@@ -77,8 +77,7 @@ if(__name__ == '__main__'):
         #print "Name of tex file", texFileName, path+texFileName
         print("Try conversion rst => tex.")
         errorCode = subprocess.call("rst2latex %s %s %s"%(rst2latexOptions,
-                                          path+fileName, path+texFileName),
-                                    cwd=path, shell=True)
+                                    path+fileName, path+texFileName), cwd=path, shell=True)
         if(errorCode != 0):
             print("Conversion from rst to LaTeX failed!")
 
@@ -94,7 +93,7 @@ if(__name__ == '__main__'):
         texFile.close()
         texFile = open("%s%s"%(path, texFileName), mode="w")
         texFile.write(newLines)
-        texFile.close() # close and *write*!
+        texFile.close()  # close and *write*!
 
         print("Try conversion tex => PDF.")
         errorCode = subprocess.call("pdflatex %s; pdflatex %s"
