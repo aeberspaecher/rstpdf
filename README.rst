@@ -19,4 +19,6 @@ Call the script in a shell::
 
 Options:
 
- - ``-s 10``: Use a 10 point font.
+ - ``-s 10`` or ``--size=10``: use a 10 point font.
+ - ``-l`` or ``--landscape``: use landscape orientation.
+ - ``-t`` or ``--two-column``: use a two-column layout.
