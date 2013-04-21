@@ -9,11 +9,11 @@ installed). KOMA-Script document classes are being used.
 (c) 2012 Alexander Eberspächer
 """
 
+# TODO: use shutil instead of cp calls (MS Windows compat.)!
 # TODO: implement "check" option
 # TODO: make math more convenient
 
 import os
-import sys
 import subprocess
 from optparse import OptionParser
 import tempfile
@@ -33,7 +33,6 @@ if(__name__ == '__main__'):
 
     if(len(args) == 0):
         parser.error("Specify at least one file to convert!")
-        sys.exit(1)
 
     # check for special options:
     orientation = ",landscape" if options.useLandscape else ""
@@ -52,12 +51,13 @@ if(__name__ == '__main__'):
 
     path = tempfile.mkdtemp() + "/"
     for fileName in args:
+        print("Working on file %(fileName)s"%locals())
         # copy source:
+        print("Copy source file to %(path)s"%locals())
         errorCode = subprocess.call("cp %s %s"%(fileName, path),
                                     cwd=os.environ["PWD"], shell=True)
         if(errorCode != 0):
-            print("Copying rst file to temporary path failed!")
-            sys.exit(1)
+            raise OSError("Copying rst file to temporary path failed!")
 
         # parse for figures:
         fileObj = open(fileName, mode="r")
@@ -69,8 +69,7 @@ if(__name__ == '__main__'):
                 errorCode = subprocess.call("cp %s %s"%(figName, path),
                                             cwd=os.environ["PWD"], shell=True)
                 if(errorCode != 0):
-                    print("Copying figure/image file to temporary path failed!")
-                    sys.exit(1)
+                    raise OSError("Copying figure/image file to temporary path failed!")
 
         texFileName = fileName[:fileName.rfind(".")] + ".tex"
         pdfFileName = fileName[:fileName.rfind(".")] + ".pdf"
@@ -103,5 +102,4 @@ if(__name__ == '__main__'):
 
         errorCode = subprocess.call(["cp", path+pdfFileName, os.environ["PWD"]])
         if(errorCode != 0):
-            print("Copying PDF file back failed!")
-            sys.exit(1)
+            raise OSError("Copying PDF file back failed!")
